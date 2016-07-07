@@ -8,14 +8,22 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableStringBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener /*, OnMapReadyCallback */ {
 
-    private SupportMapFragment map;
+    //private SupportMapFragment map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +42,24 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        map.getMapAsync(new MapabomActivity()) ;//remember getMap() is deprecated!
+        atualizarMapa(40,40);
+    }
+
+    private void atualizarMapa(double lat, double lng) {
+        SupportMapFragment map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        MapsActivity activity = new MapsActivity();
+        activity.setLatLng(lat, lng);
+        map.getMapAsync(activity);
+    }
+
+    public void atualizarPosicao(View view) {
+        EditText edtLat = (EditText)findViewById(R.id.edtLat);
+        EditText edtLng = (EditText)findViewById(R.id.edtLng);
+
+        double lat = Double.parseDouble(edtLat.getText().toString());
+        double lng = Double.parseDouble(edtLng.getText().toString());
+
+        atualizarMapa(lat, lng);
     }
 
     @Override
@@ -77,7 +101,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_maps) {
-            Intent i = new Intent(this, MapabomActivity.class);
+            Intent i = new Intent(this, MapsActivity.class);
             startActivity(i);
         }
 
